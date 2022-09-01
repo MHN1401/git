@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title> my project </title>
+  <style>
+   body{
+    background-color:powderblue;
+   }
+  </style>
+ </head>
+ <body>
+  <h1 style='text-align:center'>سامانه انجام کار</h1>
+  <h1 style='text-align:right'>{{work.work_title}}</h1>
+  <hr>
+  <pre style='text-align:right'><h2>{{work.time}}     {{work.price}}     {{work.pub_date}} : افزوده شده در تاریخ</h2></pre>
+  <dl style='text-align:right'>
+   <dt><h3>توضیحات : </h3></dt>
+   <dd><h4>{{work.info}}</h4></dd>
+  </dl>
+ </body>
