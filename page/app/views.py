@@ -2,12 +2,14 @@ from django.shortcuts import render , redirect
 
 # Create your views here.
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from .models import Work
 from django.core.paginator import Paginator
 
 def hello(request):
     return HttpResponse("<h1 style='text-align:center;'>Hello World</h1>")
 
+@login_required
 def salam(request,name):
  return HttpResponse("<h1 style='text-align:center;'>salam {}</h1>".format(name))
 
