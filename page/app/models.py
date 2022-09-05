@@ -17,7 +17,7 @@ class Work(models.Model):
     price = models.CharField(max_length = 100)
     time = models.CharField(max_length = 100)
     employer = models.CharField(max_length = 100)
-    info = models.CharField(max_length = 300)
+    info = models.CharField(max_length = 300, default = '')
     pub_date = models.DateTimeField('date published')
 
     def __str__(self):
