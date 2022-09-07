@@ -27,8 +27,8 @@
                 {% for i in page_obj %}
                     <tr>
                         <td>{{i.work_title}}</td>
-                        <td>{{i.price}}</td>
-                        <td>{{i.time}}</td>
+                        <td>{{i.price}} تومان</td>
+                        <td>{{i.time}} روز</td>
                         <td><ins>{{i.employer}}</ins></td>
                         <td><div> <a href="{% url 'detail' i.id %}" class="btn btn-default">توضیحات بیشتر</a> </div></td>
                     </tr>
@@ -48,33 +48,13 @@
             </div>
         </div>
         <div class="col-md-3">
-            <h3> ورود </h3>
-            <form>
-                <div class="form-group">
-                    <input type="email" class="form-control" name="email" placeholder="ایمیل">
-                </div>
-                <button class="btn btn-default btn-block">ورود</button>
-            </form>
-            <hr/>
-            <h3>ثبت نام</h3>
-            <form>
-                <div class="form-group">
-                    <input name="username" maxlength="100" class="form-control" placeholder="نام‌کاربری">
-                </div>
-                <div class="form-group">
-                    <input name="email" class="form-control" placeholder="ایمیل" type="email">
-                </div>
-                <div class="form-group">
-                    <input name="password" class="form-control" placeholder="رمزعبور" type="password">
-                </div>
-                <div class="form-group">
-                    <input name="password_rpt" class="form-control" placeholder="تکرار رمز عبور" type="password">
-                </div>
-                <div class="form-group">
-                    <label><input name="master" type="checkbox">کارفرما</label>
-                </div>
-                <button class="btn btn-default btn-block">ثبت نام</button>
-            </form>
+            {% if not user.is_authenticated %}
+                <<a href="{% url 'login' %}"><button class="btn btn-default btn-block">ورود</button></a>
+                <a href="{% url 'signup' %}"><button class="btn btn-default btn-block">ثبت نام</button></a>
+            {% else %}
+                <a href="{% url 'new_work' %}"><button class="btn btn-default btn-block">اضافه کردن کار</button></a>
+                <a href="{% url 'logout' %}"><button class="btn btn-default btn-block">خروج</button></a>
+            {% endif %}
         </div>
     </div>
     <footer>

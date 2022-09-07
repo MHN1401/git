@@ -2,7 +2,8 @@
 <html lang="fa">
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="main.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -51,8 +52,8 @@
         </div>
         <div class="col-md-3">
             <h5>شما با نام کاربری beautifulMaster1755 به عنوان کارفرما وارد سیستم شده‌اید.</h5>
-            <a class="btn btn-default btn-block" href="index.html">صفحه‌ی اصلی</a>
-            <a class="btn btn-default btn-block">خروج</a>
+            <a class="btn btn-default btn-block" href="{% url 'mainpage' %}">صفحه‌ی اصلی</a>
+            <a class="btn btn-default btn-block" href="{% url 'logout' %}">خروج</a>
         </div>
     </div>
     <footer>

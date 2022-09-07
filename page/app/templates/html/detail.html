@@ -20,8 +20,8 @@
                 </div>
                 <div class="col-sm-2"></div>
                 <div class="col-sm-4">ساخته شده در {{work.pub_date}}</div>
-                <div class="col-sm-3">{{work.price}}</div>
-                <div class="col-sm-3">{{work.time}}</div>
+                <div class="col-sm-3">{{work.price}} تومان</div>
+                <div class="col-sm-3">{{work.time}} روز</div>
                 <div class="col-sm-12">
                     <br/>
                     توضیحات:
@@ -31,9 +31,16 @@
             </div>
         </div>
         <div class="col-md-3">
-            <h5> شما با نام کاربری JigilWorker123 به عنوان کارمند وارد سیستم شده‌اید.</h5>
-            <a class="btn btn-default btn-block" href="index.html">صفحه‌ی اصلی</a>
-            <a class="btn btn-default btn-block">خروج</a>
+            {% if user.is_authenticated %}
+                <h5> شما با نام کاربری {{user.username}}  به عنوان کارمند وارد سیستم شده‌اید.</h5>
+            {% else %}
+                <h5> شما به عنوان مهمان وارد شده‌ااید.</h5>
+            {% endif %}
+
+            <a class="btn btn-default btn-block" href="{% url 'mainpage' %}">صفحه‌ی اصلی</a>
+            {% if user.is_authenticated %}
+                <a class="btn btn-default btn-block" href="{% url 'logout' %}">خروج</a>
+            {% endif %}
         </div>
     </div>
     <footer>
