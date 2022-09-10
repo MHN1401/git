@@ -14,44 +14,45 @@
             <h1> سامانه‌ی انجام کار</h1>
             <div>
                 <h3> افزودن کار جدید </h3>
-                <form action="index.html" class="form-horizontal">
+                <form action="{% url 'new_work' %}" class="form-horizontal" method="post">
+                    {% csrf_token %}
                     <div class="form-group">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-6">
-                            <input name="title" class="form-control" maxlength="250">
+                            <input name="title" class="form-control" maxlength="250" required>
                         </div>
                         <label class="control-label col-sm-2" for="title">عنوان</label>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-6">
-                            <textarea name="description" class="form-control" cols="40" rows="10"></textarea>
+                            <textarea name="info" class="form-control" cols="40" rows="10" required></textarea>
                         </div>
                         <label class="control-label col-sm-2" for="title">توضیحات</label>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-6">
-                            <input name="price" class="form-control" type="number">
+                            <input name="price" class="form-control" type="number" min="1000" max="50000" required>
                         </div>
                         <label class="control-label col-sm-2" for="title">قیمت</label>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-6">
-                            <input name="estimated_duration" class="form-control" type="number">
+                            <input name="time" class="form-control" type="number" required>
                         </div>
                         <label class="control-label col-sm-2" for="title">زمان تخمینی</label>
                     </div>
                     <div class="col-sm-4"></div>
                     <div class="col-sm-8">
-                        <button class="btn btn-default btn-block">افزودن کار</button>
+                        <button type="submit" class="btn btn-default btn-block">افزودن کار</button>
                     </div>
                 </form>
             </div>
         </div>
         <div class="col-md-3">
-            <h5>شما با نام کاربری beautifulMaster1755 به عنوان کارفرما وارد سیستم شده‌اید.</h5>
+            <h5>شما با نام کاربری {{user.username}} به عنوان کارفرما وارد سیستم شده‌اید.</h5>
             <a class="btn btn-default btn-block" href="{% url 'mainpage' %}">صفحه‌ی اصلی</a>
             <a class="btn btn-default btn-block" href="{% url 'logout' %}">خروج</a>
         </div>

@@ -13,8 +13,8 @@ from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from .tokens import account_activation_token  
 from .forms import SignupForm  
-from .models import Work, Employee
-
+from .models import Work, Employee, Karfarma, Karmand
+from django.utils import timezone
 
 def hello(request):
     return HttpResponse("<h1 style='text-align:center;'>Hello World</h1>")
@@ -58,6 +58,10 @@ def signup(request):
         if form.is_valid():  
             user = form.save()  
             user.is_active = False  
+            if request.POST.get('karfarma') :
+                user.karfarma = Karfarma(user = user).save()
+            else:
+                user.karmand = Karmand(user = user).save()
             user.save()  
             # to get the domain of the current site  
             current_site = get_current_site(request)  
@@ -96,7 +100,6 @@ def logout_request(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect("mainpage")
-
 def login_request(request):
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
@@ -104,7 +107,7 @@ def login_request(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
-            if user is not None:
+            if user is not None :
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}")
                 return redirect('mainpage')
@@ -116,5 +119,29 @@ def login_request(request):
     return render(request = request,
                   template_name = "html/login.html",
                   context={"form":form})
+
 def new_work(request):
+    if request.method == 'POST' :
+        user = request.user
+        x = request.POST
+        w = Work(work_title = x['title'], price = x['price'], time = x['time'], employer = user.username, info = x['info'], pub_date = timezone.now())
+        w.save()
+        return redirect('mainpage')
     return render(request, 'html/new_work.html')
+
+def assign_work(request,ID):
+    user = request.user.karmand
+    work = Work.objects.get(id=ID)
+    work.karmand = user
+    work.save()
+    return redirect('detail', ID)
+
+def unassign_work(request,ID):
+    work = Work.objects.get(id=ID)
+    work.karmand = None
+    work.save()
+    return redirect('detail', ID)
+def delete_work(request,ID):
+    work = Work.objects.get(id=ID)
+    work.delete()
+    return redirect('mainpage')

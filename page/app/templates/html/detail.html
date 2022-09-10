@@ -15,7 +15,15 @@
             <div>
                 <div class="col-sm-12">
                     <h3 style="display: inline-block">{{work.work_title}}</h3>
-                    <a class="btn btn-default">انجام می‌دم</a>
+                    {% if user.karmand %}
+                        {% if work.karmand == null %}
+                            <a href="{% url 'assign_work' work.id %}" class="btn btn-default">انجام می‌دم</a>
+                        {% elif work.karmand == user.karmand %}
+                            <a href="{% url 'unassign_work' work.id %}" class="btn btn-default">منصرف شدم</a>
+                        {% else %}
+                            <p class="btn btn-defaukt">کار گرفته شده</p>
+                        {% endif %}  
+                    {% endif %}
                     <hr/>
                 </div>
                 <div class="col-sm-2"></div>

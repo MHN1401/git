@@ -14,8 +14,10 @@
             {% for error in field.errors %}  
                 <p style="color: red">{{ error }}</p>  
             {% endfor %}  
-        </p>  
     {% endfor %}  
+    <div class="form-group">
+    	<label><input name="karfarma" type="checkbox">کارفرما</label>
+    </div>    
     <button style="color:blue" class="btn btn-outline-info" type="submit">Sign up</button>  
   </form>  
   already have an account? <a href="{% url 'login' %}" target="blank"><strong>Login here</strong></a>!
