@@ -16,6 +16,17 @@ from .forms import SignupForm
 from .models import Work, Employee, Karfarma, Karmand
 from django.utils import timezone
 
+
+def user_required(Type):
+    def decorator(func):
+        def inner(request, *args, **kwargs):        
+            user = request.user
+            if hasattr(user,'%s'%Type):
+                return func(request, *args, **kwargs)
+            return HttpResponse("<center><h1>you are not %s</h1></center>"%Type)
+        return inner
+    return decorator
+
 def hello(request):
     return HttpResponse("<h1 style='text-align:center;'>Hello World</h1>")
 
@@ -120,6 +131,7 @@ def login_request(request):
                   template_name = "html/login.html",
                   context={"form":form})
 
+@user_required("karfarma")
 def new_work(request):
     if request.method == 'POST' :
         user = request.user
@@ -129,6 +141,7 @@ def new_work(request):
         return redirect('mainpage')
     return render(request, 'html/new_work.html')
 
+@user_required("karmand")
 def assign_work(request,ID):
     user = request.user.karmand
     work = Work.objects.get(id=ID)
@@ -136,12 +149,17 @@ def assign_work(request,ID):
     work.save()
     return redirect('detail', ID)
 
+@user_required("karmand")
 def unassign_work(request,ID):
     work = Work.objects.get(id=ID)
     work.karmand = None
     work.save()
     return redirect('detail', ID)
+
+@login_required
 def delete_work(request,ID):
     work = Work.objects.get(id=ID)
+    if work.user != request.user.karmand:
+        return HttpResponse("you dont have permission to do this")
     work.delete()
     return redirect('mainpage')
