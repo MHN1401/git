@@ -159,7 +159,8 @@ def unassign_work(request,ID):
 @login_required
 def delete_work(request,ID):
     work = Work.objects.get(id=ID)
-    if work.user != request.user.karmand:
-        return HttpResponse("you dont have permission to do this")
-    work.delete()
-    return redirect('mainpage')
+    if request.user.is_superuser or work.karmand == request.user.karmand:       
+        work.delete()
+        return redirect('mainpage')
+    return HttpResponse("you dont have permission to do this")
+
