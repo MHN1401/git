@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa">
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     {% load static %}
     <link rel="stylesheet" href="{% static 'app/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -23,8 +24,40 @@
                     <th>حذف کار</th>
                 </tr>
                 </thead>
-                <tbody>
-
+                <tbody id='work_table'>
+                <script>
+                    $(document).ready(function(){
+                        var page_number = 1;
+                        function func(data){
+                            data.forEach(function(i){    
+                                var html = `    
+                                <tr>
+                                    <td>${i.work_title}</td>
+                                    <td>${i.price} تومان</td>
+                                    <td>${i.time} روز</td>
+                                    <td><ins>${i.employer}</ins></td>
+                                    <td><div> <a href="/app/${i.id}" class="btn btn-default">توضیحات بیشتر</a> </div></td>`
+                                if(i.can_del){
+                                    html +=`<td><div><a href="/app/delete_work/${i.id}" class="btn btn-default">حذف کار</a></div></td>`;
+                                }
+                                else{
+                                    html += '<td></td>';
+                                }
+                                html += '</tr>';
+                                $('#work_table').append(html);
+                            });
+                            page_number += 1;
+                            if(page_number > {{page_number}}){
+                                $('#load_more').toggle();
+                            }
+                        };
+                        $.get('load_more/'+page_number,function(data){func(data)});
+                        $('#load_more').click(function(){
+                            $.get('load_more/'+page_number,function(data){func(data)});
+                        });
+                    });
+                </script>
+                <!--
                 {% for i in page_obj %}
                     <tr>
                         <td>{{i.work_title}}</td>
@@ -39,8 +72,11 @@
                         {% endif %}
                     </tr>
                 {% endfor %}
+                -->
                 </tbody>
             </table>
+            <center id='load_more' class='btn btn-default btn-block'>کار های بیشتر</center>
+            <!--
             <div id="tasks-paginator">
                 <ul class="pagination">
                     {% for i in page_obj.paginator.page_range %}
@@ -52,10 +88,11 @@
                     {% endfor %}
                 </ul>
             </div>
+            -->
         </div>
         <div class="col-md-3">
             {% if not user.is_authenticated %}
-                <<a href="{% url 'login' %}"><button class="btn btn-default btn-block">ورود</button></a>
+                <a href="{% url 'login' %}"><button class="btn btn-default btn-block">ورود</button></a>
                 <a href="{% url 'signup' %}"><button class="btn btn-default btn-block">ثبت نام</button></a>
             {% else %}
                 {% if user.karfarma %}

@@ -52,10 +52,11 @@ def mainpage(request):
 
     work = Work.objects.all()
     paginator = Paginator(work, 10)
+    number_of_page = paginator.num_pages
     page_number = request.GET.get('page', request.session.get('page' , 1))
     request.session['page'] = page_number
     page_obj = paginator.get_page(page_number)
-    context = {'work' : work , 'page_obj' : page_obj , 'num_visit' : num_visit}
+    context = {'work' : work , 'page_obj' : page_obj , 'num_visit' : num_visit, 'page_number' : number_of_page}
     return render(request, 'html/index.html', context)
 
 def detail(request,ID):
@@ -164,3 +165,18 @@ def delete_work(request,ID):
         return redirect('mainpage')
     return HttpResponse("you dont have permission to do this")
 
+import json
+def load_more(request,page_number):
+    work = Work.objects.all()
+    page_obj = Paginator(work, 10).page(page_number).object_list
+    data = list()
+    for i in page_obj:
+        can_del = True if (request.user.is_superuser or request.user.username == i.employer) else False
+        data.append({'work_title': i.work_title, 
+                     'price': i.price,
+                     'time': i.time,
+                     'employer': i.employer,
+                     'id': i.id,
+                     'can_del': can_del,
+                    })
+    return HttpResponse(json.dumps(data), content_type="application/json")

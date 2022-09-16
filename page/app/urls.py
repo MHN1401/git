@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     path('' , views.mainpage, name='mainpage'),
-    path('<int:ID>', cache_page(1)(views.detail), name='detail'),
+    path('<int:ID>', cache_page(20)(views.detail), name='detail'),
 #    path('<int:ID>', views.detail, name='detail'),
     path('go/<name>', views.go, name='go'),
     path('hello/', views.hello, name='hello'), 
@@ -19,5 +19,6 @@ urlpatterns = [
     path('new_work/', views.new_work, name='new_work'),
     path('assign_work/<ID>', views.assign_work, name='assign_work'),
     path('unassign_work/<ID>', views.unassign_work, name='unassign_work'),
-    path('delete_work/<ID>', views.delete_work, name='delete_work'),
+    path('delete_work/<int:ID>', views.delete_work, name='delete_work'),
+    path('load_more/<int:page_number>', views.load_more, name='load_more'),
 ]
