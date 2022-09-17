@@ -16,6 +16,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
+                    <th>شماره</th>
                     <th>عنوان کار</th>
                     <th>ارزش کار</th>
                     <th>تخمین زمانی</th>
@@ -28,10 +29,13 @@
                 <script>
                     $(document).ready(function(){
                         var page_number = 1;
+                        var id = 0;
                         function func(data){
                             data.forEach(function(i){    
+                                id += 1;
                                 var html = `    
                                 <tr>
+                                    <td>${id}</td>
                                     <td>${i.work_title}</td>
                                     <td>${i.price} تومان</td>
                                     <td>${i.time} روز</td>
@@ -47,13 +51,18 @@
                                 $('#work_table').append(html);
                             });
                             page_number += 1;
-                            if(page_number > {{page_number}}){
-                                $('#load_more').toggle();
-                            }
                         };
                         $.get('load_more/'+page_number,function(data){func(data)});
                         $('#load_more').click(function(){
                             $.get('load_more/'+page_number,function(data){func(data)});
+                            if(page_number >= {{page_number}}){
+                                $('#load_more').toggle();
+                            }
+                        });
+                        $('#load_all').click(function(){
+                            $.get('load_more/'+page_number, {all : 'True'}, function(data){func(data)});
+                            $('#load_more').toggle();
+                            $('#load_all').toggle();
                         });
                     });
                 </script>
@@ -75,7 +84,8 @@
                 -->
                 </tbody>
             </table>
-            <center id='load_more' class='btn btn-default btn-block'>کار های بیشتر</center>
+            <div id='load_more' class='btn btn-default btn-block'>کار های بیشتر</div>
+            <div id='load_all' class='btn btn-default btn-block'>همه کارها</div>
             <!--
             <div id="tasks-paginator">
                 <ul class="pagination">

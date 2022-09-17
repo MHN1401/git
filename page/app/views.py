@@ -160,17 +160,15 @@ def unassign_work(request,ID):
 @login_required
 def delete_work(request,ID):
     work = Work.objects.get(id=ID)
-    if request.user.is_superuser or work.karmand == request.user.karmand:       
+    if request.user.is_superuser or work.employer == request.user.username:       
         work.delete()
         return redirect('mainpage')
     return HttpResponse("you dont have permission to do this")
 
 import json
-def load_more(request,page_number):
-    work = Work.objects.all()
-    page_obj = Paginator(work, 10).page(page_number).object_list
+def json_work(request, objects):
     data = list()
-    for i in page_obj:
+    for i in objects:
         can_del = True if (request.user.is_superuser or request.user.username == i.employer) else False
         data.append({'work_title': i.work_title, 
                      'price': i.price,
@@ -179,4 +177,17 @@ def load_more(request,page_number):
                      'id': i.id,
                      'can_del': can_del,
                     })
+    return data
+
+def load_more(request, page_number):
+    work = Work.objects.all().order_by('pub_date')
+    paginator = Paginator(work,10)
+    data = list()
+    if request.GET.get('all'):
+        while page_number <= paginator.num_pages:
+            data += json_work(request, paginator.page(page_number))
+            page_number+= 1
+    else:
+        page_obj = paginator.page(page_number)
+        data += json_work(request, page_obj)
     return HttpResponse(json.dumps(data), content_type="application/json")
