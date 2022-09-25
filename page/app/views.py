@@ -12,10 +12,35 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage  
 from django.core.paginator import Paginator
 from .tokens import account_activation_token  
-from .forms import SignupForm  
-from .models import Work, Employee, Karfarma, Karmand
+from .forms import SignupForm, WorkForm  
+from .models import Work, Employee, Karfarma, Karmand, Telephone
 from django.utils import timezone
 
+def list(request):
+    s = ''
+    for i in Telephone.objects.all():
+        s += i.tel_name
+        s += '  '
+        s += i.phone
+        s += '\n'
+    return HttpResponse('<h1>%s</h1>'%s)
+
+def add(request, name, number):
+    new = Telephone(tel_name=name, phone=number)
+    new.save()
+    return HttpResponse('<h1>شماره با موفقیت اضافه شد</h1>')
+
+def find(request, name):
+    x = Telephone.objects.get(tel_name=name)
+    if(Telephone.objects.get(tel_name=name)):
+        return HttpResponse(x.phone)
+    else:
+        return HttpResponse('<h1>همچین شماره ای وجود ندارد</h1>')
+
+def delete(request, number):
+    x = Telephone.objects.get(phone = number)
+    x.delete()
+    return HttpResponse('<h1> شماره با موفقیت حذف شد</h1>')
 
 def user_required(Type):
     def decorator(func):
@@ -135,12 +160,17 @@ def login_request(request):
 @user_required("karfarma")
 def new_work(request):
     if request.method == 'POST' :
-        user = request.user
-        x = request.POST
-        w = Work(work_title = x['title'], price = x['price'], time = x['time'], employer = user.username, info = x['info'], pub_date = timezone.now())
-        w.save()
+        work_form = WorkForm(request.POST)
+        if work_form.is_valid():
+            work = work_form.save(commit = False)
+            work.employer = request.user.username
+            work.pub_date = timezone.now()
+            work.save()
+        else:
+            return 0
         return redirect('mainpage')
-    return render(request, 'html/new_work.html')
+    work_form = WorkForm()
+    return render(request, 'html/new_work.html', context={'work_form':work_form})
 
 @user_required("karmand")
 def assign_work(request,ID):
@@ -180,7 +210,7 @@ def json_work(request, objects):
     return data
 
 def load_more(request, page_number):
-    work = Work.objects.all().order_by('pub_date')
+    work = Work.objects.all().order_by('-pub_date')
     paginator = Paginator(work,10)
     data = list()
     if request.GET.get('all'):

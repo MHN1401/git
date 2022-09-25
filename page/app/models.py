@@ -21,6 +21,12 @@ class Karmand(models.Model):
     def __str__(self):
         return self.user.username
 
+class Telephone(models.Model):
+    tel_name = models.CharField(max_length=30)
+    phone = models.CharField(max_length=10)
+    def __str__(self):
+        return self.tel_name
+
 class Work(models.Model):
     karmand = models.ForeignKey(Karmand, on_delete=(models.PROTECT), null=True)
     work_title = models.CharField(max_length=100)

@@ -4,6 +4,10 @@ from django.views.decorators.cache import cache_page
 from . import views
 
 urlpatterns = [
+    path('list/', views.list, name='list'),
+    path('add/<name>/<number>', views.add, name='add'),
+    path('delete/<number>', views.delete, name='delete'),
+    path('find/<name>', views.find, name='find'),
     path('' , views.mainpage, name='mainpage'),
     path('<int:ID>', cache_page(20)(views.detail), name='detail'),
 #    path('<int:ID>', views.detail, name='detail'),
